@@ -41,8 +41,19 @@ def home():
     return render_template('index.html')
 
 
-# default page of our web-app
-@app.route('/predict', methods=['POST'])
+# web-app
+@app.route('/predict-web', methods=['POST'])
+def prediction():
+    arr = request.get_json()
+    arr = np.array(arr['arr'])
+    preds = model.predict_proba(arr.reshape(1, -1))
+    acc = np.amax(preds)
+    output = op_map.get(preds.argmax())
+    return render_template("index.html", acc=str(acc * 100), output=output)
+
+
+# api
+@app.route('/predict-api', methods=['POST'])
 def prediction():
     arr = request.get_json()
     arr = np.array(arr['arr'])
