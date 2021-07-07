@@ -4,6 +4,7 @@ from flask import Flask, request, jsonify, render_template
 import pickle
 from flask import jsonify
 from joblib import load
+import json
 
 # Initialize the flask App
 app = Flask(__name__)
@@ -42,9 +43,12 @@ def home():
 
 
 # web-app
-@app.route('/predict-web', methods=['POST'])
-def prediction():
-    arr = request.get_json()
+@app.route('/predict-web', methods=['GET', 'POST'])
+def prediction_web():
+    if request.method == 'GET':
+        arr = json.loads(request.args.get('arr', None))
+    else:
+        arr = request.get_json()
     arr = np.array(arr['arr'])
     preds = model.predict_proba(arr.reshape(1, -1))
     acc = np.amax(preds)
@@ -53,14 +57,17 @@ def prediction():
 
 
 # api
-@app.route('/predict-api', methods=['POST'])
-def prediction():
-    arr = request.get_json()
+@app.route('/predict-api', methods=['GET', 'POST'])
+def prediction_api():
+    if request.method == 'GET':
+        arr = json.loads(request.args.get('arr', None))
+    else:
+        arr = request.get_json()
     arr = np.array(arr['arr'])
     preds = model.predict_proba(arr.reshape(1, -1))
     acc = np.amax(preds)
     output = op_map.get(preds.argmax())
-    return jsonify(med_name=output, acc=str(acc*100))
+    return jsonify(med_name=output, acc=str(acc * 100))
 
 
 if __name__ == "__main__":
