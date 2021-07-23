@@ -9,7 +9,7 @@ import json
 # Initialize the flask App
 app = Flask(__name__)
 
-# Mappind Dictionary
+# Mapping Dictionary
 
 tab_map = {
     "prc_500_mg": 0,
@@ -24,16 +24,30 @@ tab_map = {
     "ltk_h": 9
 }
 
-op_map = {value: key for key, value in tab_map.items()}
+milk_map = {
+    'shakti_6ml': 0,
+    'shakti_7ml': 1,
+    'shakti_8ml': 2,
+    'shakti_9ml': 3,
+    'shakti_10ml': 4,
+    'gold_6ml': 5,
+    'gold_7ml': 6,
+    'gold_8ml': 7,
+    'gold_9ml': 8,
+    'gold_10ml': 9,
+    'taza_10ml': 10,
+    'taza_8ml': 11,
+    'taza_9ml': 12,
+    'taza_7ml': 13,
+    'taza_6ml': 14
+}
+
+tab_op_map = {value: key for key, value in tab_map.items()}
+milk_op_map = {value: key for key, value in milk_map.items()}
 
 # model = pickle.load(open('final_model.pkl', 'rb'))
-model = load('model.pkl')
-
-
-# function for prediction
-def make_pred(arr):
-    preds = model.predict_proba(arr.reshape(1, -1))
-    return op_map.get(preds.argmax())
+tab_model = load('tab_model.pkl')
+milk_model = load('milk_model.pkl')
 
 
 # default page of our web-app
@@ -42,31 +56,33 @@ def home():
     return render_template('index.html')
 
 
-# web-app
-@app.route('/predict-web', methods=['GET', 'POST'])
-def prediction_web():
+# milk
+
+@app.route('/predict-milk', methods=['GET', 'POST'])
+def prediction_milk_api():
     if request.method == 'GET':
         arr = json.loads(request.args.get('arr', None))
     else:
         arr = request.get_json()
     arr = np.array(arr['arr'])
-    preds = model.predict_proba(arr.reshape(1, -1))
+    preds = milk_model.predict_proba(arr.reshape(1, -1))
     acc = np.amax(preds)
-    output = op_map.get(preds.argmax())
-    return render_template("index.html", acc=str(acc * 100), output=output)
+    output = milk_op_map.get(preds.argmax())
+    return jsonify(milk_name=output, acc=str(acc * 100))
 
 
-# api
-@app.route('/predict-api', methods=['GET', 'POST'])
-def prediction_api():
+# tab
+
+@app.route('/predict-tab', methods=['GET', 'POST'])
+def prediction_tab_api():
     if request.method == 'GET':
         arr = json.loads(request.args.get('arr', None))
     else:
         arr = request.get_json()
     arr = np.array(arr['arr'])
-    preds = model.predict_proba(arr.reshape(1, -1))
+    preds = tab_model.predict_proba(arr.reshape(1, -1))
     acc = np.amax(preds)
-    output = op_map.get(preds.argmax())
+    output = tab_op_map.get(preds.argmax())
     return jsonify(med_name=output, acc=str(acc * 100))
 
 
