@@ -12,16 +12,16 @@ app = Flask(__name__)
 # Mapping Dictionary
 
 tab_map = {
-    "prc_500_mg": 0,
-    "neurobion": 1,
+    "paracetamol_500mg": 0,
+    "neurobin_vit_b_pink_red": 1,
     "dolo_650": 2,
-    "supradyn": 3,
+    "ecosprin": 3,
     "crocin": 4,
     "combiflame": 5,
-    "prc_650_mg": 6,
-    "aspirin_75_mg": 7,
+    "paracetamol_650mg": 6,
+    "lemolate_gold": 7,
     "danp": 8,
-    "ltk_h": 9
+    "lth_unison": 9
 }
 
 milk_map = {
