@@ -39,7 +39,10 @@ milk_map = {
     'taza_8ml': 11,
     'taza_9ml': 12,
     'taza_7ml': 13,
-    'taza_6ml': 14
+    'taza_6ml': 14,
+    'taza_5ml': 15,
+    'shakti_5ml':16,
+    'gold_5ml':17
 }
 
 tab_op_map = {value: key for key, value in tab_map.items()}
